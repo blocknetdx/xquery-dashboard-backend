@@ -59,11 +59,19 @@ app.post("/api/projects/:projectId", async (req, res) => {
         const { ["api-key"]: apiKey } = req.headers
         console.log("apiKey:", apiKey)
         const payload = req.body
+        // const response = (await axios({
+        //     method: 'post',
+        //     url: config.SNODE_ENDPOINT + '/' + projectId,
+        //     headers: {
+        //         'Api-Key': apiKey
+        //     },
+        //     data: payload
+        // })).data
         const response = (await axios({
             method: 'post',
-            url: config.SNODE_ENDPOINT + '/' + projectId,
+            url: config.SNODE_ENDPOINT + '/' + '39570ad7-9f53-46ad-a552-c15d440139fb',
             headers: {
-                'Api-Key': apiKey
+                'Api-Key': 'UQbNVAE2h2WYKa-CU4BIMKP6Zj-ivnw_ErBg6rIq0to'
             },
             data: payload
         })).data
