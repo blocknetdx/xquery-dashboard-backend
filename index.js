@@ -20,7 +20,7 @@ app.use(express.static(path.resolve(__dirname, 'public')))
 app.use(express.json())       // to support JSON-encoded bodies
 app.use(express.urlencoded({ extended: true })) // to support URL-encoded bodies
 
-app.get("/api", async (req, res) => {
+app.get("/api", (req, res) => {   
     try {
         res.status(200).json({ success: true, data: null, msg: 'health check 100%!' })
     } catch (error) {
@@ -59,17 +59,70 @@ app.post("/api/projects/:projectId", async (req, res) => {
         const { ["api-key"]: apiKey } = req.headers
         console.log("apiKey:", apiKey)
         const payload = req.body
+        // const response = (await axios({
+        //     method: 'post',
+        //     url: config.SNODE_ENDPOINT + '/' + projectId,
+        //     headers: {
+        //         'Api-Key': apiKey
+        //     },
+        //     data: payload
+        // })).data
         const response = (await axios({
             method: 'post',
-            url: config.SNODE_ENDPOINT + '/' + projectId,
+            url: config.SNODE_ENDPOINT + '/' + '39570ad7-9f53-46ad-a552-c15d440139fb',
             headers: {
-                'Api-Key': apiKey
+                'Api-Key': 'UQbNVAE2h2WYKa-CU4BIMKP6Zj-ivnw_ErBg6rIq0to'
             },
             data: payload
         })).data
+        console.log('response: ', response?.result);
         res.status(200).json({ success: true, result: response?.result, msg: "get project_stats success" })
     } catch (error) {
+        console.log('api/projects/:projectId error: ', error);
         res.status(404).json({ success: false, data: null, msg: error.response.data.message })
+    }
+})
+
+app.get("/api/snodes", async (req, res) => {   
+    try {
+        const response = await axios({
+            method: 'get',
+            url: 'https://utils.blocknet.org/xrs/xrshowconfigs',
+        })
+
+        let data = [];
+
+        function checkStringExist(text, string) {
+            return text.includes(string);
+        }
+
+        response?.data.forEach(item => {
+            const config = item?.config || '';
+            if (checkStringExist(config, 'xquery')) {
+                let networks = [];
+                if (checkStringExist(config, 'xquery_avax_pangolin')) {
+                    networks.push('AVAX')
+                } 
+                if (checkStringExist(config, 'xquery_eth_uniswap')) {
+                    networks.push('ETH');
+                } 
+                if (checkStringExist(config, 'xquery_nevm_pegasys')) {
+                    networks.push('SYS');
+                } 
+
+                data.push({
+                    ip: [item?.config.split('\n')[1]?.split('host=')[1], `${item?.nodepubkey.substr(0, 5)}...`],
+                    networks,
+                    cost: [30, 200]
+                })
+            }
+        })
+
+        // console.log('filtered data: ', data);
+
+        res.status(200).json({ success: true, data, msg: 'health check 100%!' })
+    } catch (error) {
+        res.status(502).json({ success: false, data: null, msg: error })
     }
 })
 
