@@ -67,11 +67,12 @@ app.post("/api/projects/:projectId", async (req, res) => {
         //     },
         //     data: payload
         // })).data
+        
         const response = (await axios({
             method: 'post',
-            url: config.SNODE_ENDPOINT + '/' + '39570ad7-9f53-46ad-a552-c15d440139fb',
+            url: config.SNODE_ENDPOINT + '/' + 'd6f6bdde-5840-4aa8-9c22-c79321c4fd7b',
             headers: {
-                'Api-Key': 'UQbNVAE2h2WYKa-CU4BIMKP6Zj-ivnw_ErBg6rIq0to'
+                'Api-Key': 'W0rbHV0s5Bf1jgiUDQkUbn-cVlIfuD2VOAGvkAKrrQI'
             },
             data: payload
         })).data
