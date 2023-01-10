@@ -61,26 +61,16 @@ app.post("/api/projects/:projectId", async (req, res) => {
     try {
         const { projectId } = req.params
         const { ["api-key"]: apiKey } = req.headers
-        // console.log("apiKey:", apiKey)
         const payload = req.body
-        // const response = (await axios({
-        //     method: 'post',
-        //     url: config.SNODE_ENDPOINT + '/' + projectId,
-        //     headers: {
-        //         'Api-Key': apiKey
-        //     },
-        //     data: payload
-        // })).data
-        
         const response = (await axios({
             method: 'post',
-            url: config.SNODE_ENDPOINT + '/' + 'd6f6bdde-5840-4aa8-9c22-c79321c4fd7b',
+            url: config.SNODE_ENDPOINT + '/' + projectId,
             headers: {
-                'Api-Key': 'W0rbHV0s5Bf1jgiUDQkUbn-cVlIfuD2VOAGvkAKrrQI'
+                'Api-Key': apiKey
             },
             data: payload
         })).data
-        // console.log('response: ', response?.result);
+        
         res.status(200).json({ success: true, result: response?.result, msg: "get project_stats success" })
     } catch (error) {
         res.status(404).json({ success: false, data: null, msg: error.response.data.message })
