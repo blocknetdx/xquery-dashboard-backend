@@ -8,6 +8,8 @@ const cors = require('cors')
 const ethers = require('ethers')
 const config = require('./config/index')
 const dotenv = require('dotenv')
+const userController = require('./controllers/user')
+const projectController = require('./controllers/project')
 
 dotenv.config()
 
@@ -53,11 +55,13 @@ app.post("/api/projects", async (req, res) => {
     }
 })
 
+app.post("/api/create-project/:userid", projectController.createProject)
+
 app.post("/api/projects/:projectId", async (req, res) => {
     try {
         const { projectId } = req.params
         const { ["api-key"]: apiKey } = req.headers
-        console.log("apiKey:", apiKey)
+        // console.log("apiKey:", apiKey)
         const payload = req.body
         // const response = (await axios({
         //     method: 'post',
@@ -76,10 +80,9 @@ app.post("/api/projects/:projectId", async (req, res) => {
             },
             data: payload
         })).data
-        console.log('response: ', response?.result);
+        // console.log('response: ', response?.result);
         res.status(200).json({ success: true, result: response?.result, msg: "get project_stats success" })
     } catch (error) {
-        console.log('api/projects/:projectId error: ', error);
         res.status(404).json({ success: false, data: null, msg: error.response.data.message })
     }
 })
@@ -126,6 +129,12 @@ app.get("/api/snodes", async (req, res) => {
         res.status(502).json({ success: false, data: null, msg: error })
     }
 })
+
+app.post("/api/create-user", userController.register)
+
+app.get("/api/user-projects/:userid", projectController.getProjects)
+
+app.delete("/api/delete-user/:id", userController.deleteUser)
 
 app.listen(process.env.PORT || 8000, () => {
     console.log(`Server listening at port: ${process.env.PORT || 8000}`)
