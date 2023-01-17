@@ -4,6 +4,26 @@ This is a simple express-app server for verifying the signature sent from the xq
 
 ## Getting started
 
+Update Nginx config so that when the front end sends requests to `ip_address/api` it will be redirected to port 5433 on the server:
+
+```bash
+server {
+  listen 80 default_server;
+  servername ;
+
+  # react app & front-end files
+  location / {
+    root /opt/frontend;
+    try_files $uri /index.html;
+  }
+
+  # node api reverse proxy
+  location /api {
+    proxy_pass http://localhost:5433/;
+  }
+}
+```
+
 Clone the repo:
 
 ```bash
@@ -32,12 +52,8 @@ yarn start
 
 When front-end tries to create new project, a sign message comes and it makes a signature.
 
-![image](https://user-images.githubusercontent.com/100922076/183118080-13e3c476-4f68-4ebd-81c3-1f1ae1abb33a.png)
-
 After click sign, front sends the signature to backend to verify. <br/>
 The endpoint includes signature and wallet address as a query param. <br/>
 When this back-end receives the request, it verifies to signature and wallet are compared to correct one. <br/>
-Returns success when valid, otherwise fail. <br/>
-If success, front-end goes to the next step - create project. <br/>
-
-![image](https://user-images.githubusercontent.com/100922076/183118746-e90e4a98-da19-47cd-8d8b-6193d0a8d20e.png)
+Returns success when valid, otherwise fail.<br/>
+If success, front-end goes to the next step - create project.
