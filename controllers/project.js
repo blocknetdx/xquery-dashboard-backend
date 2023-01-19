@@ -6,7 +6,7 @@ const axios = require('axios')
 
 exports.findProjectsByUserId = (userid) => {
     return new Promise(resolve => {
-        resolve(db('projects').where({ user_id: userid }));
+        resolve(db('projects').where({ user_id: userid }).orderBy('id', 'desc'));
     })
 }
 
