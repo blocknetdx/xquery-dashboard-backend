@@ -1,6 +1,5 @@
 const db = require('../config/db')
 const sendResponse = require('../helpers/handlerResponse')
-const config = require('../config/index')
 const userController = require('./user')
 const axios = require('axios')
 
@@ -14,7 +13,7 @@ exports.createProject = async (req, res) => {
     try {
         const payload = req.body
 
-        if (!payload) {
+        if (!payload || !payload.ip || !payload.data) {
             return sendResponse(res, 'ERROR_OCCURRED', 404)
         }
 
@@ -30,7 +29,9 @@ exports.createProject = async (req, res) => {
             return sendResponse(res, 'USER_NOT_FOUND', 404)
         }
 
-        const response = await axios.post(config.SNODE_ENDPOINT, payload)
+        const snodeEndpoint = `http://${payload.ip}/xrs/projects`
+
+        const response = await axios.post(snodeEndpoint, payload.data)
 
         const {
             project_id = null, api_key = null
